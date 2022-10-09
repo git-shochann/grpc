@@ -33,6 +33,7 @@ type fileServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
+// 構造体を引数にインターフェース型を返す -> メソッドが利用可能
 func NewFileServiceClient(cc grpc.ClientConnInterface) FileServiceClient {
 	return &fileServiceClient{cc}
 }
