@@ -1,0 +1,33 @@
+// ここのファイルでProtocolBuffers(スキーマ言語)を用いてスキーマを定義する -> そのあとコンパイルしてGoに変換する
+
+syntax = "proto3";
+
+package file;
+
+// Goにコンパイルをしたあとに配置する場所
+option go_package= "./pb";
+
+// *** messageは複数のフィールドを持つことが出来る型定義 -> Goだと構造体に変換される ***
+
+// リクエスト
+message ListFilesRequest{};
+
+// レスポンス
+message ListFilesResponse{
+    repeated string fileNames = 1; // repeated string -> stringの配列 これは構造体に変換され、fileNamesがフィールド名。1はただの識別するタグ番号。
+};
+// こんな感じになる
+// type ListFilesResponse struct {
+//   fileNames []string
+// }
+
+// *** service内に定義するメソッドを直接呼び出す(エンドポイントになる) -> App側でこのインターフェースを実装するように書く ***
+
+// サービス名 -> Goだとインターフェースに変換される
+service FileService {
+    // メソッド名 -> 普通にGoでもメソッド名 -> これが呼び出される直接のエンドポイントになる
+    // rpc + メソッド名 + 引数の型 + returns + 戻り値の型
+    rpc ListFiles (ListFilesRequest) returns (ListFilesResponse);
+}
+
+// *** ここまで来たらコンパイルする！ ***
