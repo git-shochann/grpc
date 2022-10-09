@@ -34,8 +34,10 @@ type server struct {
 
 // *** 上書きする？ -> context.Contextでタイムアウトや認証関連で使用する *** //
 
-func (*server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.ListFilesResponse, error) {
+func (s *server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.ListFilesResponse, error) {
 	fmt.Println("メソッドが呼び出されました")
+
+	// *** あくまでサンプルで用意した関数の内容 *** //
 
 	dir := "/Users/sho/Coding/go/src/grpc/storage"
 
@@ -56,9 +58,9 @@ func (*server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.Lis
 
 	var fileNames []string // 格納する箱の用意
 
-	// ループの作成 -> 何をしてる？
+	// ループの作成
 	for _, path := range paths {
-		if !path.IsDir() { // パスがディレクトリでない場合 == ファイルでない場合
+		if !path.IsDir() { // パスがディレクトリでない場合 == ファイルである場合
 			fileNames = append(fileNames, path.Name())
 		}
 	}
@@ -72,7 +74,7 @@ func (*server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.Lis
 
 }
 
-// サーバーの起動
+// サーバー側の起動
 func main() {
 	lis, err := net.Listen("tcp", "localhost:50051")
 	if err != nil {
@@ -83,8 +85,9 @@ func main() {
 
 	fmt.Println("Server is Running!")
 
-	// grpc側に作成した構造体を登録
+	// grpc側に、作成したサーバーの構造体を登録 //
 	pb.RegisterFileServiceServer(s, &server{})
+
 	// 指定のリッスンポートでサーバーを起動
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Faild to serve %v", err)
@@ -92,4 +95,4 @@ func main() {
 
 }
 
-// *** go run server/main.go *** //
+// *** go run server/main.go を行ってサーバー起動 *** //
