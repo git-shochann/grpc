@@ -81,14 +81,14 @@ func main() {
 
 	s := grpc.NewServer()
 
+	fmt.Println("Server is Running!")
+
 	// grpc側に作成した構造体を登録
 	pb.RegisterFileServiceServer(s, &server{})
 	// 指定のリッスンポートでサーバーを起動
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Faild to serve %v", err)
 	}
-
-	fmt.Println("Server is Running!")
 
 }
 
