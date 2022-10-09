@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"grpc/pb"
 	"io/ioutil"
+	"log"
+	"net"
+
+	"google.golang.org/grpc"
 )
 
 type server struct {
@@ -30,12 +34,12 @@ type server struct {
 
 // *** 上書きする？ -> context.Contextでタイムアウトや認証関連で使用する *** //
 
-func (s *server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.ListFilesResponse, error) {
+func (*server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.ListFilesResponse, error) {
 	fmt.Println("メソッドが呼び出されました")
 
 	dir := "/Users/sho/Coding/go/src/grpc/storage"
 
-	paths, err := ioutil.ReadDir(dir) // ストレージ配下のパスを取得する
+	paths, err := ioutil.ReadDir(dir) // ディレクトリ以下のリストを取得する = 今回だとstorage以下のPath = name.txt + occupation.txt
 	if err != nil {
 		return nil, err
 	}
@@ -67,3 +71,25 @@ func (s *server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.L
 	return res, nil
 
 }
+
+// サーバーの起動
+func main() {
+	lis, err := net.Listen("tcp", "localhost:50051")
+	if err != nil {
+		log.Fatalf("Faild to listen %v", err)
+	}
+
+	s := grpc.NewServer()
+
+	// grpc側に作成した構造体を登録
+	pb.RegisterFileServiceServer(s, &server{})
+	// 指定のリッスンポートでサーバーを起動
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("Faild to serve %v", err)
+	}
+
+	fmt.Println("Server is Running!")
+
+}
+
+// *** go run server/main.go *** //
