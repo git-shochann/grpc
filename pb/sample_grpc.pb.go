@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: samle.proto
+// source: proto/sample.proto
 
 package pb
 
@@ -21,7 +21,11 @@ const _ = grpc.SupportPackageIsVersion7
 // FileServiceClient is the client API for FileService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+
+// クライアント用のインターフェース
 type FileServiceClient interface {
+	// メソッド名 -> 普通にGoでもメソッド名 -> これが呼び出される直接のエンドポイントになる
+	// rpc + メソッド名 + 引数の型 + returns + 戻り値の型
 	ListFiles(ctx context.Context, in *ListFilesRequest, opts ...grpc.CallOption) (*ListFilesResponse, error)
 }
 
@@ -45,9 +49,12 @@ func (c *fileServiceClient) ListFiles(ctx context.Context, in *ListFilesRequest,
 // FileServiceServer is the server API for FileService service.
 // All implementations must embed UnimplementedFileServiceServer
 // for forward compatibility
+// サーバー側のインターフェース？
 type FileServiceServer interface {
+	// メソッド名 -> 普通にGoでもメソッド名 -> これが呼び出される直接のエンドポイントになる
+	// rpc + メソッド名 + 引数の型 + returns + 戻り値の型
 	ListFiles(context.Context, *ListFilesRequest) (*ListFilesResponse, error)
-	mustEmbedUnimplementedFileServiceServer()
+	mustEmbedUnimplementedFileServiceServer() // これは
 }
 
 // UnimplementedFileServiceServer must be embedded to have forward compatible implementations.
@@ -101,5 +108,5 @@ var FileService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "file.proto",
+	Metadata: "proto/sample.proto",
 }
