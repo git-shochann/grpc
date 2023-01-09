@@ -71,7 +71,6 @@ func (s *server) ListFiles(ctx context.Context, req *pb.ListFilesRequest) (*pb.L
 	}
 
 	return res, nil
-
 }
 
 // サーバー側の起動

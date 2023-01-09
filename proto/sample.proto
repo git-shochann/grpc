@@ -33,4 +33,3 @@ service FileService {
 // *** ここまで来たらコンパイルする！ ***
 
 // protoc -I. --go_out=. --go-grpc_out=. proto/*.proto -> go mod tidy
-// -> 
